@@ -11,19 +11,19 @@ public class OthelloFrame extends JFrame {
         preparation = new Preparation(this, this::setupStage);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize((int)(1920*0.4), (int)(1080*0.4));
+        setSize((int) (1920 * 0.4), (int) (1080 * 0.4));
         setTitle("Othello GUI");
         setLocationRelativeTo(null); // set the window position at the center of the screen.
         setContentPane(preparation.panel);
     }
 
-    private void setupStage(GameSettings settings){
+    private void setupStage(SetupSettings settings) {
         gameStage = new GameStage(this::backToPreparation, settings);
         setContentPane(gameStage.panel);
     }
 
-    private void backToPreparation(){
-        gameStage=null;
+    private void backToPreparation() {
+        gameStage = null;
         setContentPane(preparation.panel);
     }
 }

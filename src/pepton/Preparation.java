@@ -23,11 +23,15 @@ public class Preparation {
     }
 
     private void onPlayButton(ActionEvent e) {
-        gameSetupListener.SetupPerformed(new GameSettings(
+        gameSetupListener.SetupPerformed(new SetupSettings(
                 Map.of(false,
-                        new GameSettings.PlayerInfo(false, comboBox1.getItemAt(comboBox1.getSelectedIndex()).toString()),
+                        new SetupSettings.PlayerInfo(false, comboBox1.getItemAt(comboBox1.getSelectedIndex()).toString()),
                         true,
-                        new GameSettings.PlayerInfo(true, comboBox2.getItemAt(comboBox2.getSelectedIndex()).toString())
-                )));
+                        new SetupSettings.PlayerInfo(true, comboBox2.getItemAt(comboBox2.getSelectedIndex()).toString())
+                ),
+                Map.of(0, "●",
+                        1, "〇",
+                        2, "-"),
+                8));
     }
 }
