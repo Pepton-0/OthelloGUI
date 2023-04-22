@@ -64,7 +64,7 @@ public class GameStage {
                 discView.setEnabled(false);
                 discView.setText(discIcons.get(2));
                 discView.setText(y + ":" + x);
-                discView.setUI(new MetalButtonUI(){
+                discView.setUI(new MetalButtonUI() {
                     @Override
                     protected Color getDisabledTextColor() {
                         return Color.BLACK;
@@ -86,7 +86,7 @@ public class GameStage {
 
     private void updatePlayerState(JTextPane text, PlayerBase player) {
         String discIcon = discIcons.get(Comparator.toInt(player.getInfo().side()));
-        String side = player.getInfo().side() ? "2nd"+discIcon : "1st"+discIcon;
+        String side = player.getInfo().side() ? "2nd" + discIcon : "1st" + discIcon;
         String all = side + ":" + player.getInfo().playerType();
         int value = Comparator.toInt(player.getInfo().side());
         all += "\n Discs: " + virtualBoard.getAmountOf(value);
@@ -96,7 +96,8 @@ public class GameStage {
     }
 
     private void updateBoardView() {
-        stateView.setText(nowTurn ? "2nd player's turn!" : "1st player's turn!");
+        String discIcon = discIcons.get(Comparator.toInt(nowTurn));
+        stateView.setText(nowTurn ? discIcon + "2nd player's turn!" : discIcon + "1st player's turn!");
 
         updatePlayerState(firstPlayerState, players.get(false));
         updatePlayerState(secondPlayerState, players.get(true));
@@ -121,8 +122,12 @@ public class GameStage {
             String msg;
             if (nowDiscs == nextDiscs)
                 msg = "Draw!";
-            else
-                msg = (nowTurn ? "2nd" : "1st") + " won!";
+            else {
+                // ここってちょっとトリッキーだよね
+                boolean winner = (nowDiscs > nextDiscs) == nowTurn;
+                msg = winner ? "2nd player won!" : "1st player won!";
+            }
+
             stateView.setText(msg);
             back.setEnabled(true);
             return;

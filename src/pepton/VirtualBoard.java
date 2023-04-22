@@ -11,6 +11,10 @@ public class VirtualBoard {
 
     private final int[][] map;
 
+    private static final Vec2i[] DIRECTIONS = new Vec2i[]{
+            new Vec2i(1, 0), new Vec2i(1, -1), new Vec2i(0, -1), new Vec2i(-1, -1),
+            new Vec2i(-1, 0), new Vec2i(-1, 1), new Vec2i(0, 1), new Vec2i(1, 1)};
+
     public VirtualBoard(int width, int height) {
         this.width = width;
         this.height = height;
@@ -23,7 +27,10 @@ public class VirtualBoard {
     private VirtualBoard(int width, int height, int[][] map) {
         this.width = width;
         this.height = height;
-        this.map = map.clone();
+        this.map = new int[width][height];
+        for (int x = 0; x < width; x++) {
+            this.map[x] = map[x].clone();
+        }
     }
 
     public int getState(int x, int y) {
@@ -70,11 +77,8 @@ public class VirtualBoard {
      */
     public ArrayList<Vec2i> checkTurnableDiscs(int x, int y, boolean side, boolean onlyOne) {
         ArrayList<Vec2i> list = new ArrayList<>();
-        Vec2i[] directions = new Vec2i[]{
-                new Vec2i(1, 0), new Vec2i(1, -1), new Vec2i(0, -1), new Vec2i(-1, -1),
-                new Vec2i(-1, 0), new Vec2i(-1, 1), new Vec2i(0, 1), new Vec2i(1, 1)};
 
-        for (Vec2i vec : directions) {
+        for (Vec2i vec : DIRECTIONS) {
             list.addAll(checkDirectionDiscs(x, y, vec, side, onlyOne));
             if (onlyOne && list.size() >= 1)
                 return list;
@@ -84,7 +88,7 @@ public class VirtualBoard {
 
     private ArrayList<Vec2i> checkDirectionDiscs(int x, int y, Vec2i normal, boolean side, boolean onlyOne) {
         ArrayList<Vec2i> list = new ArrayList<>();
-        if(getSafeState(x, y) != 2)
+        if (getSafeState(x, y) != 2)
             return list; // return empty list as the position already has a disc or out of range.
         int amount = 0;
         int currentX = x, currentY = y;
@@ -131,10 +135,38 @@ public class VirtualBoard {
         return x < 0 || width <= x || y < 0 || height <= y;
     }
 
-    public void setStateAndUpdate(int x, int y, boolean side) {
+    public VirtualBoard setStateAndUpdate(int x, int y, boolean side) {
         ArrayList<Vec2i> discs = checkTurnableDiscs(x, y, side);
         map[x][y] = Comparator.toInt(side);
         for (Vec2i disc : discs)
             map[disc.x()][disc.y()] = Comparator.toInt(side);
+
+        return this;
+    }
+
+    /**
+     * @apiNote Evaluate current situation for the side player
+     */
+    public float evaluate1(boolean side) {
+        float score = 0;
+
+        int myAmount = getAmountOf(Comparator.toInt(side));
+        int opponentAmount = getAmountOf(Comparator.toInt(!side));
+        score += (float)(myAmount - opponentAmount) * 0.5f;
+
+        float cornerAmount = 0;
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y += (height - 1)) {
+                cornerAmount += (float) Comparator.toInt(Comparator.toBoolean(map[x][y]) == side) - 0.5f;
+            }
+        }
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x += (width - 1)) {
+                cornerAmount += (float) Comparator.toInt(Comparator.toBoolean(map[x][y]) == side) - 0.5f;
+            }
+        }
+        score += cornerAmount * 1.7f;
+
+        return score;
     }
 }

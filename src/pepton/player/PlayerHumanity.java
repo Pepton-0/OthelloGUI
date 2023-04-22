@@ -14,8 +14,6 @@ public class PlayerHumanity extends PlayerBase {
 
     @Override
     public void receiveTurnFlag() {
-        super.receiveTurnFlag();
-
         VirtualBoard clone = stage.getVirtualBoardCopy();
         ArrayList<Vec2i> candidates = clone.settablePositions(info.side());
         for (Vec2i candidate : candidates) {

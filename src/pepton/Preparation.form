@@ -16,7 +16,8 @@
           <focusable value="false"/>
           <model>
             <item value="Humanity"/>
-            <item value="AI_test"/>
+            <item value="AI_Test"/>
+            <item value="AI_Random"/>
           </model>
         </properties>
       </component>
@@ -50,7 +51,8 @@
           <focusable value="false"/>
           <model>
             <item value="Humanity"/>
-            <item value="AI_test"/>
+            <item value="AI_Test"/>
+            <item value="AI_Random"/>
           </model>
         </properties>
       </component>
